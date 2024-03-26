@@ -131,23 +131,9 @@ group.selectAll("circle")
   .attr("fill", function (d) {
     return regionColor(d.Region);
   })
-  .on("mouseover", function (e, d) {
-    console.log(e);
-    if (e.target.style.opacity === '0') {
-      return;
-    }
-    tooltip.transition()
-      .duration(200)
-      .style("opacity", 0.9);
-    tooltip.html(`${d.Country}<br/>Population: ${d.Population}<br/>Income: ${d.Income}<br/>Life Expectancy: ${d.LifeExpectancy}<br/>Region: ${d.Region}`)
-      .style("left", (e.pageX) + "px")
-      .style("top", (e.pageY - 28) + "px");
-  })
-  .on("mouseout", function (d) {
-    tooltip.transition()
-      .duration(500)
-      .style("opacity", 0);
-  })
+  // .on("mouseenter", showTooltip())
+  .on("pointerout", hideTooltip())
+  .on("pointerover", showTooltip())
   .attr("class", function (d) {
     return `region-${regionScale(d.Region)}`;
   })
@@ -168,4 +154,27 @@ svgContainer.append("g")
   .attr("class", "axis y-axis")
   // .attr("transform", `translate(${padding}, 0)`)
   .call(yAxis);
+
+function hideTooltip() {
+  return function (d) {
+    tooltip.transition()
+      .duration(500)
+      .style("opacity", 0);
+  };
+}
+
+function showTooltip() {
+  return function (e, d) {
+    console.log(e);
+    if (e.target.style.opacity === '0') {
+      return;
+    }
+    tooltip.transition()
+      .duration(200)
+      .style("opacity", 0.9);
+    tooltip.html(`${d.Country}<br/>Population: ${d.Population}<br/>Income: ${d.Income}<br/>Life Expectancy: ${d.LifeExpectancy}<br/>Region: ${d.Region}`)
+      .style("left", (e.pageX) + "px")
+      .style("top", (e.pageY - 28) + "px");
+  };
+}
 // });
